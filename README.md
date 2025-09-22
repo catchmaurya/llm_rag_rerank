@@ -45,3 +45,28 @@ curl -X POST http://127.0.0.1:8000/ask \
   -d '{"q":"What is in my documents?"}'
 -- {"answer": "summary of your docs ..."}
 
+### debug commands
+
+ollama list                   # ensure your model is present
+
+--------
+
+# 1) Is the API alive?
+curl -s http://127.0.0.1:8000/health
+
+# 2) Do you have points in Qdrant?
+curl -s http://127.0.0.1:6333/collections | jq .
+curl -s http://127.0.0.1:6333/collections/docs | jq .
+
+# 3) Does Ollama reply instantly?
+curl -s http://localhost:11434/api/tags | jq .
+curl -s http://localhost:11434/api/generate \
+  -d '{"model":"mistral:instruct","prompt":"Return ONLY this JSON: {\"ok\":true}","stream":false}' | jq .
+
+curl --max-time 15 -v -X POST "http://127.0.0.1:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{"q":"Say hi"}'
+
+curl --max-time 15 -v -X POST "http://127.0.0.1:8000/ask" \
+  -H "Content-Type: application/json" \
+  -d '{"q":"Say hi"}'
